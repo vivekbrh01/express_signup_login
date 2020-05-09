@@ -4,9 +4,20 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var mongoose = require("mongoose");
+var flash = require("connect-flash");
+// var session = require("express-session");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
+
+// Connect to Mongodb
+mongoose.connect(
+	"mongodb://localhost/user-login",
+	{ useNewUrlParser: true, useUnifiedTopology: true },
+	(err) => {
+		console.log("connected", err ? err : true);
+	}
+);
 
 var app = express();
 
@@ -19,6 +30,22 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+app.use(flash());
+
+/////////////////////////////
+// app.use((req, res, next) => {
+// 	// this creates a cookie named username in browser with value 'xyz'.
+// 	res.cookie("username", "xyz");
+// });
+
+// app.use(
+// 	session({
+// 		secret: "somethinganythingnothing",
+// 		resave: false,
+// 		saveUninitialized: true,
+// 	})
+// );
+/////////////////////////////
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
