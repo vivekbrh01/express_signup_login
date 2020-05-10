@@ -4,7 +4,11 @@ var User = require("../models/user");
 
 /* GET users listing. */
 router.get("/", function (req, res, next) {
-	res.send("User Route");
+	if (req.session && req.session.userId) {
+		return res.send("User Route");
+	} else {
+		res.redirect("/user/login");
+	}
 });
 
 router.get("/signup", function (req, res) {
@@ -38,8 +42,9 @@ router.post("/login", (req, res, next) => {
 		}
 		// log a user in
 		// creating a session on the server side
+		// session && cookie
+		req.session.userId = user.id;
 		console.log("logged in");
-
 		res.redirect("/");
 	});
 });
